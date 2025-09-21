@@ -1,0 +1,221 @@
+@echo off
+title MULTITOOL v2.1 (by Pipon)
+cls
+
+                                                                    
+
+
+:: Main Menu
+:menu
+echo +----------------------------------------+
+echo ^|               Author: Pipon            ^|
+echo ^|                MULTITOOL               ^|
+echo ^|           Choose an Option:            ^|
+echo ^|----------------------------------------^|
+echo ^|  1. IP Geolocator                      ^|
+echo ^|  2. System Info                        ^|
+echo ^|  3. Network Scanner                    ^|
+echo ^|  4. File Management                    ^|
+echo ^|  5. Process Manager                    ^|
+echo ^|  6. Startup Manager                    ^|
+echo ^|  7. Cleaner                            ^|
+echo ^|  8. Backup Tool                        ^|
+echo ^|  9. Matrix Effect                      ^|
+echo ^| 10. Fake Virus Prank                   ^|
+echo ^| 11. Port Scanner                       ^|
+echo ^| 12. Wi-Fi Password Viewer              ^|
+echo ^| 13. Text Encryptor/Decryptor           ^|
+echo ^| 14. ASCII Art Generator                ^|
+echo ^| 15. Network Spammer (Prank)            ^|
+echo ^|  0. Exit                               ^|
+echo +----------------------------------------+
+echo.
+
+set /p choice="Select an option: "
+
+:: Route to Functions
+if "%choice%"=="1" goto ipgeolocator
+if "%choice%"=="2" goto sysinfo
+if "%choice%"=="3" goto netscan
+if "%choice%"=="4" goto fileman
+if "%choice%"=="5" goto procman
+if "%choice%"=="6" goto startup
+if "%choice%"=="7" goto cleaner
+if "%choice%"=="8" goto backup
+if "%choice%"=="9" goto matrix
+if "%choice%"=="10" goto prank
+if "%choice%"=="11" goto portscan
+if "%choice%"=="12" goto wifipass
+if "%choice%"=="13" goto encrypt
+if "%choice%"=="14" goto asciiart
+if "%choice%"=="15" goto spammer
+if "%choice%"=="0" exit
+
+:: Invalid input handling
+cls
+echo Invalid selection, try again.
+goto menu
+
+:: IP Geolocator Function
+:ipgeolocator
+cls
+echo IP Geolocator Tool
+set /p ip="Enter IP address to locate: "
+
+:: Using PowerShell to fetch geolocation data
+echo Fetching geolocation for %ip%...
+powershell -NoExit -Command "
+try {
+    $response = Invoke-RestMethod -Uri 'http://ip-api.com/json/%ip%' -ErrorAction Stop
+    if ($response) {
+        Write-Host 'Geolocation Information:'
+        Write-Host 'IP: ' $response.query
+        Write-Host 'Country: ' $response.country
+        Write-Host 'Region: ' $response.regionName
+        Write-Host 'City: ' $response.city
+        Write-Host 'Zip: ' $response.zip
+        Write-Host 'ISP: ' $response.isp
+        Write-Host 'Latitude: ' $response.lat
+        Write-Host 'Longitude: ' $response.lon
+    } else {
+        Write-Host 'No data returned from IP geolocation service.'
+    }
+} catch {
+    Write-Host 'Error: Unable to retrieve data. Please check your internet connection or try again later.'
+}
+pause
+goto menu
+
+:: System Information Function
+:sysinfo
+cls
+echo System Information:
+systeminfo | more
+pause
+goto menu
+
+:: Network Scanner Function
+:netscan
+cls
+echo Network Scanner:
+set /p target="Enter IP or hostname to scan: "
+ping %target% -n 4
+tracert %target%
+pause
+goto menu
+
+:: File Management Function
+:fileman
+cls
+echo File Management:
+echo 1. Copy Files
+echo 2. Move Files
+echo 3. Delete Files
+set /p filechoice="Choose an option: "
+if "%filechoice%"=="1" set /p source="Source: " & set /p dest="Destination: " & copy %source% %dest%
+if "%filechoice%"=="2" set /p source="Source: " & set /p dest="Destination: " & move %source% %dest%
+if "%filechoice%"=="3" set /p target="File to delete: " & del %target%
+pause
+goto menu
+
+:: Process Manager Function
+:procman
+cls
+echo Process Manager:
+echo 1. List Processes
+echo 2. Kill a Process
+set /p procchoice="Choose an option: "
+if "%procchoice%"=="1" tasklist
+if "%procchoice%"=="2" set /p procname="Process name to kill: " & taskkill /im %procname% /f
+pause
+goto menu
+
+:: Startup Manager Function
+:startup
+cls
+echo Startup Manager:
+echo (This requires Administrator privileges)
+pause
+start shell:startup
+goto menu
+
+:: Cleaner Function
+:cleaner
+cls
+echo Cleaning temporary files...
+del /q /s %temp%\*
+echo Done.
+pause
+goto menu
+
+:: Backup Tool Function
+:backup
+cls
+echo Backup Tool:
+set /p source="Source folder: "
+set /p dest="Backup location: "
+xcopy %source% %dest% /s /e /h /i
+pause
+goto menu
+
+:: Matrix Effect Function
+:matrix
+cls
+color 02
+:loop
+echo %random%%random%%random%%random%%random%%random%%random%%random%
+goto loop
+
+:: Fake Virus Prank Function
+:prank
+cls
+msg * Your computer has encountered a critical error. (Just a prank!)
+pause
+goto menu
+
+:: Port Scanner Function
+:portscan
+cls
+set /p target="Enter IP to scan ports: "
+for /l %%p in (1,1,1024) do (
+    echo Scanning port %%p...
+    (echo. | timeout /t 1 >nul | telnet %target% %%p) 2>nul && echo Port %%p is open
+)
+pause
+goto menu
+
+:: Wi-Fi Password Viewer Function
+:wifipass
+cls
+echo Saved Wi-Fi Passwords:
+netsh wlan show profiles
+set /p ssid="Enter Wi-Fi name: "
+netsh wlan show profiles name="%ssid%" key=clear | findstr Key
+pause
+goto menu
+
+:: Text Encryptor/Decryptor Function
+:encrypt
+cls
+echo Text Encryptor/Decryptor:
+set /p text="Enter text to encode (ROT13): "
+powershell "[char[]] '%text%' | ForEach-Object { if ($_ -match '[a-zA-Z]') { [char](([int][char]$_ + 13 -as [int]) % 26 + (($_ -cmatch '[a-z]') * 97 + ($_ -cmatch '[A-Z]') * 65)) } else { $_ } } -join ''"
+pause
+goto menu
+
+:: ASCII Art Generator Function
+:asciiart
+cls
+echo Enter text for ASCII Art:
+set /p art="Text: "
+figlet %art%
+pause
+goto menu
+
+:: Network Spammer (Prank) Function
+:spammer
+cls
+set /p target="Enter IP to spam with pings: "
+:spamloop
+ping %target% -l 65500 -w 1 -n 1
+goto spamloop
